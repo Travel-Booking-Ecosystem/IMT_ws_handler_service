@@ -50,24 +50,26 @@ public class WSHandlerService {
 
     public void sendNewMessageEvent(NewMessageEvent event) {
         // send to all members in the conversation
+        WebSocketEvent webSocketEvent = WebSocketEvent.builder()
+                .name(NEW_MESSAGE)
+                .data(event.getMessage())
+                .build();
+
         for (String memberId : event.getConversationMemberIds()) {
             String destination = USER_ENDPOINT + "/" + memberId;
-            WebSocketEvent webSocketEvent = WebSocketEvent.builder()
-                    .name(NEW_MESSAGE)
-                    .data(event.getMessage())
-                    .build();
             simpMessagingTemplate.convertAndSend(destination, webSocketEvent);
         }
     }
 
     public void sendNewMessageReactionEvent(NewMessageReactionEvent event) {
         // send to all members in the conversation
+        WebSocketEvent webSocketEvent = WebSocketEvent.builder()
+                .name(NEW_MESSAGE_REACTION)
+                .data(event.getMessageReaction())
+                .build();
+
         for (String memberId : event.getConversationMemberIds()) {
             String destination = USER_ENDPOINT + "/" + memberId;
-            WebSocketEvent webSocketEvent = WebSocketEvent.builder()
-                    .name(NEW_MESSAGE_REACTION)
-                    .data(event.getMessageReaction())
-                    .build();
             simpMessagingTemplate.convertAndSend(destination, webSocketEvent);
         }
     }
