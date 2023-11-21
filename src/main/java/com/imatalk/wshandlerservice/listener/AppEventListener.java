@@ -1,9 +1,6 @@
 package com.imatalk.wshandlerservice.listener;
 
-import com.imatalk.wshandlerservice.events.NewConversationEvent;
-import com.imatalk.wshandlerservice.events.NewFriendRequestEvent;
-import com.imatalk.wshandlerservice.events.NewMessageEvent;
-import com.imatalk.wshandlerservice.events.NewNotificationEvent;
+import com.imatalk.wshandlerservice.events.*;
 import com.imatalk.wshandlerservice.service.WSHandlerService;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -19,6 +16,7 @@ public class AppEventListener {
     private final String NEW_FRIEND_REQUEST_TOPIC = "new-friend-request";
     private final String NEW_NOTIFICATION_TOPIC = "new-notification";
     private final String NEW_MESSAGE_TOPIC = "new-message";
+    private final String NEW_MESSAGE_REACTION_TOPIC = "new-message-reaction";
 
     private final WSHandlerService wsHandlerService;
     @KafkaListener(topics = NEW_CONVERSATION_TOPIC, containerFactory = "appEventKafkaListenerContainerFactory")
@@ -45,5 +43,9 @@ public class AppEventListener {
         wsHandlerService.sendNewMessageEvent(event.value());
     }
 
-
+    @KafkaListener(topics = NEW_MESSAGE_REACTION_TOPIC, containerFactory = "appEventKafkaListenerContainerFactory")
+    public void consumeNewMessageReaction(ConsumerRecord<String, NewMessageReactionEvent> event) {
+        System.out.println("New Message Reaction: " + event.value());
+        wsHandlerService.sendNewMessageReactionEvent(event.value());
+    }
 }
