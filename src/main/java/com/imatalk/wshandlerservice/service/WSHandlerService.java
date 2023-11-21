@@ -54,6 +54,11 @@ public class WSHandlerService {
     public void sendNewMessageEvent(NewMessageEvent event) {
         // send to all members in the conversation
         for (String memberId : event.getConversationMemberIds()) {
+            boolean isMessageSender = memberId.equals(event.getMessage().getSenderId());
+            // don't send to the sender, because the sender already has the message
+            if (isMessageSender) {
+                continue;
+            }
             String destination = USER_ENDPOINT + "/" + memberId;
             WebSocketEvent webSocketEvent = WebSocketEvent.builder()
                     .name(NEW_MESSAGE)
