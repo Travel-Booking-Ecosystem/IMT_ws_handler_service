@@ -17,7 +17,8 @@ public class WebSocketEvent {
         NEW_MESSAGE,
         NEW_FRIEND_REQUEST,
         NEW_NOTIFICATION,
-        NEW_CONVERSATION
+        NEW_CONVERSATION,
+        NEW_MESSAGE_REACTION
     }
 
 }

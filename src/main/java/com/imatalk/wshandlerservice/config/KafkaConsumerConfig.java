@@ -1,10 +1,7 @@
 package com.imatalk.wshandlerservice.config;
 
 
-import com.imatalk.wshandlerservice.events.NewConversationEvent;
-import com.imatalk.wshandlerservice.events.NewFriendRequestEvent;
-import com.imatalk.wshandlerservice.events.NewMessageEvent;
-import com.imatalk.wshandlerservice.events.NewNotificationEvent;
+import com.imatalk.wshandlerservice.events.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,7 +55,8 @@ public class KafkaConsumerConfig {
                 NewConversationEvent.class,
                 NewFriendRequestEvent.class,
                 NewMessageEvent.class,
-                NewNotificationEvent.class
+                NewNotificationEvent.class,
+                NewMessageReactionEvent.class
         };
 
         String typeMapping = "";

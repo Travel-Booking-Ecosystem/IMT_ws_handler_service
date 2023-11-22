@@ -1,9 +1,6 @@
 package com.imatalk.wshandlerservice.service;
 
-import com.imatalk.wshandlerservice.events.NewConversationEvent;
-import com.imatalk.wshandlerservice.events.NewFriendRequestEvent;
-import com.imatalk.wshandlerservice.events.NewMessageEvent;
-import com.imatalk.wshandlerservice.events.NewNotificationEvent;
+import com.imatalk.wshandlerservice.events.*;
 import com.imatalk.wshandlerservice.model.WebSocketEvent;
 import lombok.RequiredArgsConstructor;
 
@@ -53,17 +50,36 @@ public class WSHandlerService {
 
     public void sendNewMessageEvent(NewMessageEvent event) {
         // send to all members in the conversation
+        WebSocketEvent webSocketEvent = WebSocketEvent.builder()
+                .name(NEW_MESSAGE)
+                .data(event.getMessage())
+                .build();
+
         for (String memberId : event.getConversationMemberIds()) {
+            String destination = USER_ENDPOINT + "/" + memberId;
             boolean isMessageSender = memberId.equals(event.getMessage().getSenderId());
             // don't send to the sender, because the sender already has the message
             if (isMessageSender) {
                 continue;
             }
+            simpMessagingTemplate.convertAndSend(destination, webSocketEvent);
+        }
+    }
+
+    public void sendNewMessageReactionEvent(NewMessageReactionEvent event) {
+        // send to all members in the conversation
+        WebSocketEvent webSocketEvent = WebSocketEvent.builder()
+                .name(NEW_MESSAGE_REACTION)
+                .data(event.getMessageReaction())
+                .build();
+        for (String memberId : event.getConversationMemberIds()) {
+            String reactorId = event.getMessageReaction().getReactionInformation().getReactorId();
+            boolean isMessageSender = memberId.equals(reactorId);
+            // don't send to the reactor, because the reactor already has the reaction when he/she reacted on the fronten
+            if (isMessageSender) {
+                continue;
+            }
             String destination = USER_ENDPOINT + "/" + memberId;
-            WebSocketEvent webSocketEvent = WebSocketEvent.builder()
-                    .name(NEW_MESSAGE)
-                    .data(event.getMessage())
-                    .build();
             simpMessagingTemplate.convertAndSend(destination, webSocketEvent);
         }
     }
