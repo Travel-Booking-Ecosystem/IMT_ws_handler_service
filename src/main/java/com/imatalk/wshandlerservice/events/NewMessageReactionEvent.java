@@ -48,8 +48,8 @@ public class NewMessageReactionEvent {
         LIKE,
         LOVE,
         HAHA,
-        WOW,
         SAD,
+        CRY,
         ANGRY
     }
 }
